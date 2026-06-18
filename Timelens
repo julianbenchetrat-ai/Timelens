@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TimeLens</title>
+
+<style>
+
+body{
+margin:0;
+background:#050505;
+font-family:Segoe UI,Arial,sans-serif;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+width:90%;
+max-width:900px;
+background:#111;
+border:2px solid gold;
+border-radius:20px;
+padding:30px;
+box-shadow:0 0 40px gold;
+text-align:center;
+}
+
+h1{
+color:gold;
+font-size:50px;
+margin-top:0;
+}
+
+.uploadBox{
+border:3px dashed gold;
+padding:40px;
+border-radius:20px;
+margin:20px 0;
+}
+
+button{
+background:gold;
+color:black;
+border:none;
+padding:15px 30px;
+font-size:18px;
+border-radius:15px;
+cursor:pointer;
+font-weight:bold;
+transition:.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+box-shadow:0 0 20px gold;
+}
+
+img{
+max-width:300px;
+border-radius:15px;
+margin:20px;
+border:2px solid gold;
+}
+
+.slider{
+width:80%;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔮 TimeLens</h1>
+
+<p>See what you might look like in the future.</p>
+
+<div class="uploadBox">
+
+<input type="file" id="imageInput">
+
+<br><br>
+
+<label>Years Ahead:</label>
+
+<br><br>
+
+<input
+class="slider"
+type="range"
+min="5"
+max="50"
+value="20"
+id="yearSlider">
+
+<h2 id="yearText">20 Years</h2>
+
+<br>
+
+<button id="predictButton">
+See The Future
+</button>
+
+</div>
+
+<div>
+
+<h2>Original</h2>
+
+<img id="originalImage">
+
+<h2>Future</h2>
+
+<img id="futureImage">
+
+</div>
+
+</div>
+
+<script>
+
+// JavaScript will go here
+
+</script>
+
+</body>
+</html>

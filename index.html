@@ -125,7 +125,76 @@ See The Future
 
 <script>
 
-// JavaScript will go here
+<script>
+const HF_TOKEN = "PASTE_YOUR_TOKEN_HERE";
+
+const MODEL_URL =
+"https://api-inference.huggingface.co/models/Qwen/Qwen-Image-Edit";
+
+const imageInput = document.getElementById("imageInput");
+const originalImage = document.getElementById("originalImage");
+const futureImage = document.getElementById("futureImage");
+const yearSlider = document.getElementById("yearSlider");
+const yearText = document.getElementById("yearText");
+const predictButton = document.getElementById("predictButton");
+
+let selectedFile = null;
+
+imageInput.addEventListener("change", () => {
+    selectedFile = imageInput.files[0];
+
+    if (selectedFile) {
+        originalImage.src = URL.createObjectURL(selectedFile);
+    }
+});
+
+yearSlider.addEventListener("input", () => {
+    yearText.textContent = yearSlider.value + " Years";
+});
+
+predictButton.addEventListener("click", async () => {
+
+    if (!selectedFile) {
+        alert("Please upload a photo first.");
+        return;
+    }
+
+    predictButton.disabled = true;
+    predictButton.textContent = "Generating...";
+
+    try {
+
+        const response = await fetch(
+            MODEL_URL,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${HF_TOKEN}`
+                },
+                body: selectedFile
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Model request failed.");
+        }
+
+        const blob = await response.blob();
+
+        futureImage.src = URL.createObjectURL(blob);
+
+    } catch (err) {
+
+        console.error(err);
+        alert("Generation failed. We'll need to adjust the model or request.");
+
+    }
+
+    predictButton.disabled = false;
+    predictButton.textContent = "See The Future";
+
+});
+</script>
 
 </script>
 

@@ -6,7 +6,6 @@
 <title>TimeLens</title>
 
 <style>
-
 body{
 margin:0;
 background:#050505;
@@ -69,7 +68,6 @@ border:2px solid gold;
 .slider{
 width:80%;
 }
-
 </style>
 </head>
 
@@ -91,32 +89,22 @@ width:80%;
 
 <br><br>
 
-<input
-class="slider"
-type="range"
-min="5"
-max="50"
-value="20"
-id="yearSlider">
+<input class="slider" type="range" min="5" max="50" value="20" id="yearSlider">
 
 <h2 id="yearText">20 Years</h2>
 
 <br>
 
-<button id="predictButton">
-See The Future
-</button>
+<button id="predictButton">See The Future</button>
 
 </div>
 
 <div>
 
 <h2>Original</h2>
-
 <img id="originalImage">
 
 <h2>Future</h2>
-
 <img id="futureImage">
 
 </div>
@@ -125,11 +113,7 @@ See The Future
 
 <script>
 
-
-const HF_TOKEN = "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";
-
-const MODEL_URL =
-"https://api-inference.huggingface.co/models/Qwen/Qwen-Image-Edit";
+const MODEL_URL = "/api/future"; // your backend AI endpoint
 
 const imageInput = document.getElementById("imageInput");
 const originalImage = document.getElementById("originalImage");
@@ -140,6 +124,7 @@ const predictButton = document.getElementById("predictButton");
 
 let selectedFile = null;
 
+// show uploaded image
 imageInput.addEventListener("change", () => {
     selectedFile = imageInput.files[0];
 
@@ -148,10 +133,12 @@ imageInput.addEventListener("change", () => {
     }
 });
 
+// slider text update
 yearSlider.addEventListener("input", () => {
     yearText.textContent = yearSlider.value + " Years";
 });
 
+// send image to AI backend
 predictButton.addEventListener("click", async () => {
 
     if (!selectedFile) {
@@ -164,37 +151,30 @@ predictButton.addEventListener("click", async () => {
 
     try {
 
-        const response = await fetch(
-            MODEL_URL,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${HF_TOKEN}`
-                },
-                body: selectedFile
-            }
-        );
+        const formData = new FormData();
+        formData.append("image", selectedFile);
+        formData.append("years", yearSlider.value);
+
+        const response = await fetch(MODEL_URL, {
+            method: "POST",
+            body: formData
+        });
 
         if (!response.ok) {
             throw new Error("Model request failed.");
         }
 
         const blob = await response.blob();
-
         futureImage.src = URL.createObjectURL(blob);
 
     } catch (err) {
-
         console.error(err);
-        alert("Generation failed. We'll need to adjust the model or request.");
-
+        alert("Generation failed. Check your backend API.");
     }
 
     predictButton.disabled = false;
     predictButton.textContent = "See The Future";
-
 });
-
 
 </script>
 

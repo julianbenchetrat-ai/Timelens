@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TimeLens</title>
+<title>TimeLens AI</title>
 
 <style>
 body{
@@ -30,13 +30,13 @@ text-align:center;
 
 h1{
 color:gold;
-font-size:50px;
-margin-top:0;
+font-size:48px;
+margin-bottom:10px;
 }
 
 .uploadBox{
 border:3px dashed gold;
-padding:40px;
+padding:30px;
 border-radius:20px;
 margin:20px 0;
 }
@@ -47,26 +47,36 @@ color:black;
 border:none;
 padding:15px 30px;
 font-size:18px;
-border-radius:15px;
+border-radius:12px;
 cursor:pointer;
 font-weight:bold;
-transition:.3s;
+transition:0.3s;
 }
 
 button:hover{
 transform:scale(1.05);
-box-shadow:0 0 20px gold;
+box-shadow:0 0 15px gold;
+}
+
+button:disabled{
+opacity:0.5;
+cursor:not-allowed;
 }
 
 img{
 max-width:300px;
 border-radius:15px;
-margin:20px;
+margin:15px;
 border:2px solid gold;
 }
 
 .slider{
 width:80%;
+}
+
+.status{
+margin-top:10px;
+color:#aaa;
 }
 </style>
 </head>
@@ -75,45 +85,40 @@ width:80%;
 
 <div class="container">
 
-<h1>🔮 TimeLens</h1>
-
-<p>See what you might look like in the future.</p>
+<h1>🔮 TimeLens AI</h1>
+<p>Upload a photo and see a future version</p>
 
 <div class="uploadBox">
 
-<input type="file" id="imageInput">
+<input type="file" id="imageInput" accept="image/*">
 
 <br><br>
 
-<label>Years Ahead:</label>
-
-<br><br>
-
+<label>Years Ahead</label><br>
 <input class="slider" type="range" min="5" max="50" value="20" id="yearSlider">
-
 <h2 id="yearText">20 Years</h2>
 
 <br>
 
-<button id="predictButton">See The Future</button>
+<button id="predictButton">Generate Future</button>
+
+<div class="status" id="statusText"></div>
 
 </div>
 
 <div>
-
 <h2>Original</h2>
 <img id="originalImage">
 
 <h2>Future</h2>
 <img id="futureImage">
-
 </div>
 
 </div>
 
 <script>
 
-const MODEL_URL = "/api/future"; // your backend AI endpoint
+const MODEL_URL = "/api/future";
 
 const imageInput = document.getElementById("imageInput");
 const originalImage = document.getElementById("originalImage");
@@ -121,33 +126,36 @@ const futureImage = document.getElementById("futureImage");
 const yearSlider = document.getElementById("yearSlider");
 const yearText = document.getElementById("yearText");
 const predictButton = document.getElementById("predictButton");
+const statusText = document.getElementById("statusText");
 
 let selectedFile = null;
 
-// show uploaded image
+// upload image
 imageInput.addEventListener("change", () => {
     selectedFile = imageInput.files[0];
 
     if (selectedFile) {
         originalImage.src = URL.createObjectURL(selectedFile);
+        statusText.textContent = "Image loaded ✔";
     }
 });
 
-// slider text update
+// slider update
 yearSlider.addEventListener("input", () => {
     yearText.textContent = yearSlider.value + " Years";
 });
 
-// send image to AI backend
+// generate future
 predictButton.addEventListener("click", async () => {
 
     if (!selectedFile) {
-        alert("Please upload a photo first.");
+        alert("Please upload an image first.");
         return;
     }
 
     predictButton.disabled = true;
     predictButton.textContent = "Generating...";
+    statusText.textContent = "AI is working...";
 
     try {
 
@@ -161,19 +169,24 @@ predictButton.addEventListener("click", async () => {
         });
 
         if (!response.ok) {
-            throw new Error("Model request failed.");
+            throw new Error("API failed");
         }
 
         const blob = await response.blob();
-        futureImage.src = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
+
+        futureImage.src = url;
+
+        statusText.textContent = "Done ✔";
 
     } catch (err) {
         console.error(err);
-        alert("Generation failed. Check your backend API.");
+        statusText.textContent = "Error ❌ Check Vercel API";
+        alert("Something broke. Check your /api/future backend.");
     }
 
     predictButton.disabled = false;
-    predictButton.textContent = "See The Future";
+    predictButton.textContent = "Generate Future";
 });
 
 </script>
